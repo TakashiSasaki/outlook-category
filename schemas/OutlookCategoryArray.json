@@ -5,7 +5,7 @@
     "description": "A JSON Schema representing an array of OutlookCategory objects as defined in the OutlookCategory.yaml schema.\n",
     "type": "array",
     "items": {
-      "$ref": "https://raw.githubusercontent.com/TakashiSasaki/outlook-category/master/schemas/OutlookCategory.json#OutlookCategory"
+      "$ref": "https://raw.githubusercontent.com/TakashiSasaki/outlook-category/master/schemas/OutlookCategory.json"
     },
     "x-id": "urn:uuid:8f87b8d1-cc90-4e92-b295-b2222efcbf28",
     "x-version": "1.0.0",

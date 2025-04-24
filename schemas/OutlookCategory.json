@@ -1,73 +1,70 @@
 {
     "$id": "https://raw.githubusercontent.com/TakashiSasaki/outlook-category/master/schemas/OutlookCategory.yaml",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$anchor": "OutlookCategory",
-    "OutlookCategory": {
-        "title": "Outlook Category Export Schema (Unified)",
-        "x-id": "urn:uuid:fd0cf529-cbf4-4fc6-a92f-86f357c6e51e",
-        "x-version": "1.0.0",
-        "x-created": "2025-04-24",
-        "x-createdBy": {
-            "name": "Takashi Sasaki",
-            "homepage": "https://x.com/TakashiSasaki"
+    "title": "Outlook Category Export Schema (Unified)",
+    "x-id": "urn:uuid:fd0cf529-cbf4-4fc6-a92f-86f357c6e51e",
+    "x-version": "1.0.0",
+    "x-created": "2025-04-24",
+    "x-createdBy": {
+        "name": "Takashi Sasaki",
+        "homepage": "https://x.com/TakashiSasaki"
+    },
+    "x-license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+    },
+    "x-repository": "https://github.com/TakashiSasaki/outlook-category",
+    "description": "A unified schema describing Outlook category objects exported via PowerShell from the Outlook COM API. This schema supports both simplified and detailed output modes. Required fields are included in simplified mode, while additional fields are optionally included when detailed export is requested. The Parent property has been intentionally excluded.\n",
+    "type": "object",
+    "required": [
+        "Account",
+        "CategoryID",
+        "Color",
+        "Name",
+        "ClassName"
+    ],
+    "properties": {
+        "Account": {
+            "type": "string",
+            "description": "Display name or email address of the Outlook store (Store.DisplayName). Obtained from `$store.DisplayName` in PowerShell, where `$store` is part of `$namespace.Stores`.\n"
         },
-        "x-license": {
-            "name": "MIT",
-            "url": "https://opensource.org/licenses/MIT"
+        "CategoryID": {
+            "type": "string",
+            "pattern": "^\\{[0-9a-fA-F\\-]{36}\\}$",
+            "description": "Globally unique identifier for the category (Category.CategoryID). Type: String (GUID). Read-only. Obtained from `$category.CategoryID`.\n"
         },
-        "x-repository": "https://github.com/TakashiSasaki/outlook-category",
-        "description": "A unified schema describing Outlook category objects exported via PowerShell from the Outlook COM API. This schema supports both simplified and detailed output modes. Required fields are included in simplified mode, while additional fields are optionally included when detailed export is requested. The Parent property has been intentionally excluded.\n",
-        "type": "object",
-        "required": [
-            "Account",
-            "CategoryID",
-            "Color",
-            "Name",
-            "ClassName"
-        ],
-        "properties": {
-            "Account": {
-                "type": "string",
-                "description": "Display name or email address of the Outlook store (Store.DisplayName). Obtained from `$store.DisplayName` in PowerShell, where `$store` is part of `$namespace.Stores`.\n"
-            },
-            "CategoryID": {
-                "type": "string",
-                "pattern": "^\\{[0-9a-fA-F\\-]{36}\\}$",
-                "description": "Globally unique identifier for the category (Category.CategoryID). Type: String (GUID). Read-only. Obtained from `$category.CategoryID`.\n"
-            },
-            "Color": {
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 25,
-                "description": "Integer corresponding to the OlCategoryColor enumeration. Retrieved from `$category.Color` (Outlook.Category.Color).\n"
-            },
-            "Name": {
-                "type": "string",
-                "description": "Human-readable name of the category. Obtained from `$category.Name`.\n"
-            },
-            "ClassName": {
-                "type": "string",
-                "enum": [
-                    "olCategory"
-                ],
-                "description": "Resolved value of the category class (typically 'olCategory'). Based on `$category.Class`, mapped using a local lookup table.\n"
-            },
-            "Application.Name": {
-                "type": "string",
-                "description": "Name of the application providing the category object. Obtained from `$category.Application.Name`.\n"
-            },
-            "Application.Version": {
-                "type": "string",
-                "description": "Version string of the Outlook application, e.g., '16.0.0.18623'. Retrieved from `$category.Application.Version`.\n"
-            },
-            "Session.CurrentUser": {
-                "type": "string",
-                "description": "Display name of the user associated with the current Outlook session. Retrieved from `$category.Session.CurrentUser.Name`.\n"
-            },
-            "Session.DefaultStore": {
-                "type": "string",
-                "description": "Display name or email address of the default store in the session. Obtained from `$category.Session.DefaultStore.DisplayName`.\n"
-            }
+        "Color": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 25,
+            "description": "Integer corresponding to the OlCategoryColor enumeration. Retrieved from `$category.Color` (Outlook.Category.Color).\n"
+        },
+        "Name": {
+            "type": "string",
+            "description": "Human-readable name of the category. Obtained from `$category.Name`.\n"
+        },
+        "ClassName": {
+            "type": "string",
+            "enum": [
+                "olCategory"
+            ],
+            "description": "Resolved value of the category class (typically 'olCategory'). Based on `$category.Class`, mapped using a local lookup table.\n"
+        },
+        "Application.Name": {
+            "type": "string",
+            "description": "Name of the application providing the category object. Obtained from `$category.Application.Name`.\n"
+        },
+        "Application.Version": {
+            "type": "string",
+            "description": "Version string of the Outlook application, e.g., '16.0.0.18623'. Retrieved from `$category.Application.Version`.\n"
+        },
+        "Session.CurrentUser": {
+            "type": "string",
+            "description": "Display name of the user associated with the current Outlook session. Retrieved from `$category.Session.CurrentUser.Name`.\n"
+        },
+        "Session.DefaultStore": {
+            "type": "string",
+            "description": "Display name or email address of the default store in the session. Obtained from `$category.Session.DefaultStore.DisplayName`.\n"
         }
     }
 }
