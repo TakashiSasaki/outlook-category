@@ -4,3 +4,4 @@ __pycache__/*.pyc
 outlook_categories.json
 poetry.lock
 *.pyc
+OutlookCategories-20250424.json

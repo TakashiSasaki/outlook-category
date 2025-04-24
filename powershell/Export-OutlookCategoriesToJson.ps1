@@ -1,132 +1,75 @@
 <#
 .SYNOPSIS
-Exports all Outlook categories across all MAPI stores into a JSON file.
+  Export Outlook categories via COM API into a JSON file keyed by schema UUID.
 
 .DESCRIPTION
-Uses the Outlook COM API to enumerate categories in each store, and outputs either
-a simplified or detailed JSON representation. If -Detailed is specified, includes
-full summaries of Application and Session COM objects; otherwise outputs only
-essential fields.
+  Connects to Outlook via COM and collects all categories from all stores.
+  Outputs a JSON object of the form:
+    {
+      "<schema-uuid>": [ {Category1}, {Category2}, … ]
+    }
+  Writes to the path given by -OutputPath (defaults to OutlookCategories-<yyyyMMdd>.json).
 
 .PARAMETER OutputPath
-Path to the JSON file to write. If omitted, defaults to "categories-YYYYMMDD.json".
+  Path to write the JSON output. Defaults to:
+    OutlookCategories-<yyyyMMdd>.json
 
-.PARAMETER Detailed
-Switch. When present, outputs full property details (Application, Session, Parent, etc).
+.EXAMPLE
+  .\Export-OutlookCategoriesToJson.ps1 -OutputPath OutlookCategories.json
 #>
 
-param (
-    [string]$OutputPath,
-    [switch]$Detailed
+param(
+    [Parameter(Mandatory = $false)]
+    [string] $OutputPath = ("OutlookCategories-{0:yyyyMMdd}.json" -f (Get-Date))
 )
 
-# Default output filename: categories-YYYYMMDD.json
-if (-not $OutputPath) {
-    $OutputPath = "categories-$(Get-Date -Format 'yyyyMMdd').json"
-}
+# The schema UUID to use as the property name
+$SchemaUuid = '8f87b8d1-cc90-4e92-b295-b2222efcbf28'
 
 # Map of OlObjectClass codes to names
-$OlObjectClassMap = @{
+$OlClassMap = @{
     152 = 'olCategory'
     153 = 'olCategories'
 }
 
-function Resolve-OlObjectClassName {
-    param([int]$Value)
-    if ($OlObjectClassMap.ContainsKey($Value)) {
-        return $OlObjectClassMap[$Value]
-    } else {
-        return "Unknown($Value)"
+function Resolve-ClassName {
+    param([int] $Value)
+    # Use -or to fall back if the map lookup returns $null
+    return $OlClassMap[$Value] -or "Unknown($Value)"
+}
+
+# Initialize Outlook COM objects
+$Outlook   = New-Object -ComObject Outlook.Application
+$Namespace = $Outlook.GetNamespace('MAPI')
+
+# Gather all categories into an array of PSCustomObject
+$AllCategories = @()
+foreach ($Store in $Namespace.Stores) {
+    $StoreName = $Store.DisplayName
+    $Session   = $Store.GetRootFolder().Session
+    foreach ($Category in $Session.Categories) {
+        $AllCategories += [PSCustomObject]@{
+            Account               = $StoreName
+            CategoryID            = $Category.CategoryID
+            Color                 = $Category.Color
+            Name                  = $Category.Name
+            ClassName             = Resolve-ClassName -Value $Category.Class
+            'Application.Name'    = $Outlook.Name
+            'Application.Version' = $Outlook.Version
+            'Session.CurrentUser' = $Session.CurrentUser.Name
+            'Session.DefaultStore'= $Session.DefaultStore.DisplayName
+        }
     }
 }
 
-# Create Outlook COM application and namespace
-$outlook   = New-Object -ComObject Outlook.Application
-$namespace = $outlook.GetNamespace('MAPI')
+# Wrap under the UUID key
+$OutputObject = @{ $SchemaUuid = $AllCategories }
 
-$allCategories = @()
+# Serialize to compact JSON (PowerShell 7+)
+$Json = $OutputObject |
+    ConvertTo-Json -Depth 4 -Compress
 
-foreach ($store in $namespace.Stores) {
-    $storeName  = $store.DisplayName
-    $session    = $store.GetRootFolder().Session
-    $categories = $session.Categories
+# Write UTF-8 file
+Set-Content -Path $OutputPath -Value $Json -Encoding UTF8
 
-    foreach ($category in $categories) {
-        $info = New-Object System.Collections.Specialized.OrderedDictionary
-
-        # Common fields
-        $info["Account"]    = $storeName
-        $info["CategoryID"] = $category.CategoryID
-        $info["Color"]      = $category.Color
-        $info["Name"]       = $category.Name
-
-        $classVal = $category.Class
-        $info["ClassName"] = Resolve-OlObjectClassName -Value $classVal
-
-        if ($Detailed) {
-            # Full Application summary
-            $appSummary = New-Object System.Collections.Specialized.OrderedDictionary
-            $appSummary["TypeName"] = $outlook.GetType().FullName
-            $appSummary["ToString"] = $outlook.ToString()
-            $appSummary["Version"]  = $outlook.Version
-            try { $appSummary["Name"] = $outlook.Name } catch { $appSummary["Name"] = "N/A" }
-            $info["Application"] = $appSummary
-
-            # Full Session summary
-            $sessionSummary = New-Object System.Collections.Specialized.OrderedDictionary
-            $sessionSummary["TypeName"]  = $session.GetType().FullName
-            $sessionSummary["ToString"]  = $session.ToString()
-            try { $sessionSummary["CurrentUser"] = $session.CurrentUser.Name } catch { $sessionSummary["CurrentUser"] = "N/A" }
-            try { $sessionSummary["DefaultStore"] = $session.DefaultStore.DisplayName } catch { $sessionSummary["DefaultStore"] = "N/A" }
-            $sessionSummary["StoresCount"] = $namespace.Stores.Count
-            $info["Session"] = $sessionSummary
-
-            # Parent summary
-            try {
-                $parent = $category.Parent
-                $parentSummary = New-Object System.Collections.Specialized.OrderedDictionary
-                $parentSummary["TypeName"]  = $parent.GetType().FullName
-                $parentSummary["ToString"]  = $parent.ToString()
-                try { $parentSummary["Count"] = $parent.Count } catch { $parentSummary["Count"] = "N/A" }
-
-                try {
-                    $pc = $parent.GetType().InvokeMember("Class", [Reflection.BindingFlags]::GetProperty, $null, $parent, $null)
-                    $parentSummary["PossibleClass"] = $pc
-                    $parentSummary["ParentPossibleClassName"] = Resolve-OlObjectClassName -Value $pc
-                } catch {
-                    $parentSummary["PossibleClass"] = "Unknown"
-                    $parentSummary["ParentPossibleClassName"] = "Unknown"
-                }
-
-                $info["Parent"] = $parentSummary
-            } catch {
-                $info["Parent"] = "Unavailable"
-            }
-
-            # Include any other properties
-            $excluded = @("Application","Session","Parent","CategoryID","Color","Name","Class")
-            $props = $category | Get-Member -MemberType Property
-            foreach ($p in $props) {
-                if ($excluded -contains $p.Name) { continue }
-                try { $info[$p.Name] = $category.$($p.Name) } catch {}
-            }
-        }
-        else {
-            # Simplified Application/Session info
-            $info["Application.Name"]    = $outlook.Name
-            $info["Application.Version"] = $outlook.Version
-            try { $info["Session.CurrentUser"]  = $session.CurrentUser.Name } catch { $info["Session.CurrentUser"]  = "N/A" }
-            try { $info["Session.DefaultStore"] = $session.DefaultStore.DisplayName } catch { $info["Session.DefaultStore"] = "N/A" }
-        }
-
-        $allCategories += [PSCustomObject]$info
-    }
-}
-
-# Convert to JSON
-$json = $allCategories | ConvertTo-Json -Depth 6
-
-# Save to file
-$json | Set-Content -Path $OutputPath -Encoding UTF8
-
-Write-Host "Export complete: $OutputPath"
+Write-Host "[Export] JSON written to $OutputPath"
