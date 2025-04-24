@@ -5,24 +5,20 @@ import jsonschema
 
 def task_validate_schema():
     """
-    Validate the OutlookCategory.yaml schema using JSON Schema Draft 2020-12.
+    Validate the OutlookCategoryArray.yaml schema using JSON Schema Draft 2020-12.
     """
-    schema_file = Path("schemas/OutlookCategory.yaml")
+    schema_file = Path("schemas/OutlookCategoryArray.yaml")
 
     def validate():
         with schema_file.open("r", encoding="utf-8") as f:
-            doc = yaml.safe_load(f)
+            schema = yaml.safe_load(f)
 
-        if "OutlookCategory" not in doc:
-            raise ValueError("Missing top-level key: OutlookCategory")
-
-        schema = doc["OutlookCategory"]
         jsonschema.Draft202012Validator.check_schema(schema)
-        print("✅ OutlookCategory schema is valid JSON Schema Draft 2020-12.")
+        print("✅ OutlookCategoryArray schema is valid JSON Schema Draft 2020-12.")
 
     return {
         "actions": [validate],
         "file_dep": [str(schema_file)],
-        "verbosity": 2,
-        "doc": "Validate that the OutlookCategory.yaml file is a valid JSON Schema"
+        "verbosity": 2,  # 明示的に出力
+        "doc": "Validate that the OutlookCategoryArray.yaml is a valid array schema"
     }
