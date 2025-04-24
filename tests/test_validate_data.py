@@ -25,7 +25,7 @@ def test_export_and_validate(tmp_path):
     schema_root   = project_root / "schemas" / "OutlookCategories.json"
     schema_item   = project_root / "schemas" / "OutlookCategory.json"
     data_file     = project_root / "OutlookCategories.json"
-    script_path   = project_root / "powershell" / "Export-OutlookCategoriesToJson.ps1"
+    script_path   = project_root / "scripts" / "Export-OutlookCategoriesToJson.ps1"
 
     # Clean up any old export
     if data_file.exists():
