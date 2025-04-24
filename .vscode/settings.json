@@ -1,0 +1,16 @@
+{
+    // Use the virtual environment created by Poetry
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
+  
+    // Optional: Enable linting and type checking via Pylance
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": false,
+    "python.linting.ruffEnabled": true,
+    "python.analysis.typeCheckingMode": "basic",
+  
+    // Optional: Improve module resolution for local packages
+    "python.analysis.extraPaths": [
+      "${workspaceFolder}/.venv/Lib/site-packages"
+    ]
+  }
+  
