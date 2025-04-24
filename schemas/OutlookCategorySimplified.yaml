@@ -1,0 +1,35 @@
+OutlookCategorySimplified:
+  type: object
+  required:
+    - Account
+    - CategoryID
+    - Color
+    - Name
+    - ClassName
+    - Application.Name
+    - Application.Version
+    - Session.CurrentUser
+    - Session.DefaultStore
+  properties:
+    Account:
+      type: string
+    CategoryID:
+      type: string
+      pattern: '^\{[0-9a-fA-F\-]{36}\}$'
+    Color:
+      type: integer
+      minimum: 0
+      maximum: 25
+    Name:
+      type: string
+    ClassName:
+      type: string
+      enum: [olCategory]
+    Application.Name:
+      type: string
+    Application.Version:
+      type: string
+    Session.CurrentUser:
+      type: string
+    Session.DefaultStore:
+      type: string

@@ -1,0 +1,23 @@
+openapi: 3.0.3
+info:
+  title: Outlook Category Export API
+  version: 1.0.0
+
+paths:
+  /categories:
+    get:
+      summary: Get simplified category list
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OutlookCategorySimplified'
+
+components:
+  schemas:
+    OutlookCategorySimplified:
+      $ref: './schemas/OutlookCategorySimplified.yaml#/OutlookCategorySimplified'
