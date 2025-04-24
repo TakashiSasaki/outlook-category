@@ -35,7 +35,7 @@ $OlClassMap = @{
 function Resolve-ClassName {
     param([int] $Value)
     # Use -or to fall back if the map lookup returns $null
-    return $OlClassMap[$Value] -or "Unknown($Value)"
+    return $OlClassMap[$Value] ?? "Unknown($Value)"
 }
 
 # Initialize Outlook COM objects
