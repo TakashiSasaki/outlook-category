@@ -1,15 +1,18 @@
 #!/usr/bin/env python
-# get_outlook_category.py
+# src/outlook_categories/get_outlook_categories.py
+
 """
 Module for retrieving Outlook categories via the COM API and emitting JSON to stdout.
-Provides a function to return categories as a list of dictionaries,
-which can be consumed by other Python projects or piped to other tools.
+Provides a function to return categories as a dict keyed by schema UUID, mapping to a list of dictionaries.
 """
 
 import json
 import sys
 import win32com.client
 from typing import Dict, List, Any
+
+# This must match the x-id / urn:uuid of OutlookCategoryArray.json
+SCHEMA_UUID = "8f87b8d1-cc90-4e92-b295-b2222efcbf28"
 
 
 def resolve_class_name(value: int) -> str:
@@ -23,12 +26,13 @@ def resolve_class_name(value: int) -> str:
     return class_map.get(value, f'Unknown({value})')
 
 
-def get_outlook_categories() -> List[Dict[str, Any]]:
+def get_outlook_categories() -> Dict[str, List[Dict[str, Any]]]:
     """
     Retrieve Outlook categories across all MAPI stores.
 
     Returns:
-        A list of dictionaries, each representing a category.
+        A dict whose single key is the schema UUID, and whose value is
+        a list of category dicts.
     """
     outlook = win32com.client.Dispatch('Outlook.Application')
     namespace = outlook.GetNamespace('MAPI')
@@ -51,19 +55,17 @@ def get_outlook_categories() -> List[Dict[str, Any]]:
             }
             categories_list.append(info)
 
-    return categories_list
+    return {SCHEMA_UUID: categories_list}
 
 
 def main():
     """
-    Entry point: retrieve categories and write JSON to stdout.
+    Entry point: retrieve categories and write JSON object to stdout.
     """
-    cats = get_outlook_categories()
-    json.dump(cats, sys.stdout, ensure_ascii=False, indent=2)
+    result = get_outlook_categories()
+    json.dump(result, sys.stdout, ensure_ascii=False, indent=2)
     sys.stdout.write('\n')
 
 
 if __name__ == '__main__':
     main()
-
-# get_outlook_category.py
