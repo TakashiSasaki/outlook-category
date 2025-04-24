@@ -2,3 +2,4 @@ categories-*.json
 __pycache__/*.pyc
 .doit.db
 outlook_categories.json
+poetry.lock
