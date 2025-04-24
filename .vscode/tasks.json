@@ -1,0 +1,25 @@
+// .vscode/tasks.json
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Validate OutlookCategory schema",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "-m", "poetry", "run", "doit", "validate_schema"  // ← 下線に修正！
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    }
+  ]
+}
