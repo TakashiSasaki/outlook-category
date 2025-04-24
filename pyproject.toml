@@ -9,7 +9,8 @@ authors = [
 ]
 
 dependencies = [
-  "jsonschema[format]>=4.18.0"
+  "jsonschema[format]>=4.18.0",
+  "pywin32>=306"
 ]
 
 [tool.poetry]
