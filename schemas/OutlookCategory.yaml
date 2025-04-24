@@ -1,0 +1,105 @@
+OutlookCategory:
+  title: Outlook Category Export Schema (Unified)
+  description: >
+    A unified schema describing Outlook category objects exported via PowerShell
+    from the Outlook COM API. Supports both simplified and detailed output modes.
+  type: object
+  required:
+    - Account
+    - CategoryID
+    - Color
+    - Name
+    - ClassName
+  properties:
+    Account:
+      type: string
+      description: >
+        Display name or email address of the Outlook store (Store.DisplayName).
+        Obtained from `$store.DisplayName` in PowerShell, where `$store` is a
+        member of `$namespace.Stores`.
+
+    CategoryID:
+      type: string
+      pattern: '^\{[0-9a-fA-F\-]{36}\}$'
+      description: >
+        Globally unique identifier for the category (Category.CategoryID).
+        Type: String (GUID). Read from `$category.CategoryID` (read-only).
+
+    Color:
+      type: integer
+      minimum: 0
+      maximum: 25
+      description: >
+        Integer value from the OlCategoryColor enumeration.
+        Retrieved from `$category.Color` (Outlook.Category.Color).
+        Defines the color associated with the category.
+
+    Name:
+      type: string
+      description: >
+        Human-readable name of the category (Category.Name).
+        Obtained via `$category.Name`. This is the primary visible label in Outlook.
+
+    ClassName:
+      type: string
+      enum: [olCategory]
+      description: >
+        Class identifier of the Outlook object (Category.Class).
+        Value is always 'olCategory' (152). Retrieved and mapped from `$category.Class`.
+
+    Application.Name:
+      type: string
+      description: >
+        Name of the hosting application.
+        Obtained from `$category.Application.Name` (Outlook.Application.Name).
+
+    Application.Version:
+      type: string
+      description: >
+        Outlook version string (e.g. 16.0.0.18623).
+        Retrieved from `$category.Application.Version` (Outlook.Application.Version).
+
+    Session.CurrentUser:
+      type: string
+      description: >
+        Full name of the current Outlook session user.
+        From `$category.Session.CurrentUser.Name` (Outlook.NameSpace.CurrentUser).
+
+    Session.DefaultStore:
+      type: string
+      description: >
+        Display name or email address of the default store used in Outlook.
+        Obtained from `$category.Session.DefaultStore.DisplayName`
+        (Outlook.NameSpace.DefaultStore.DisplayName).
+
+    Parent:
+      type: object
+      description: >
+        Summary of the parent Categories collection (Outlook.Categories).
+        Obtained via `$category.Parent`, which is typically a collection of categories.
+      properties:
+        TypeName:
+          type: string
+          description: >
+            .NET type name of the parent COM object. Usually 'System.__ComObject'.
+        ToString:
+          type: string
+          description: >
+            String representation of the object (normally 'System.__ComObject').
+        Count:
+          type: integer
+          description: >
+            Number of categories in the parent collection.
+            Retrieved from `$category.Parent.Count`.
+        PossibleClass:
+          oneOf:
+            - type: integer
+            - type: string
+          description: >
+            Raw integer value of the OlObjectClass enumeration for the Parent object.
+            Obtained via COM reflection: `.InvokeMember("Class")`.
+        ParentPossibleClassName:
+          type: string
+          description: >
+            Name corresponding to PossibleClass (e.g. 'olCategories').
+            Resolved via lookup table in the PowerShell script.
