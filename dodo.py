@@ -68,3 +68,25 @@ def task_health():
         "actions": None,  # Only dependencies will run
         "task_dep": ["lint", "validate_schema", "export"],
     }
+
+def task_generate_schemas():
+    """
+    Generate JSON Schemas from Pydantic models and store them under schemas/generated/
+    """
+    output_dir = Path("schemas/generated")
+    return {
+        "actions": [
+            (output_dir.mkdir, [], {"parents": True, "exist_ok": True}),
+            f"poetry run python scripts/print_outlook_category_schema_alias.py > {output_dir / 'OutlookCategory.json'}",
+            f"poetry run python scripts/print_outlook_categories_schema.py > {output_dir / 'OutlookCategories.json'}",
+        ],
+        "targets": [
+            output_dir / "OutlookCategory.json",
+            output_dir / "OutlookCategories.json",
+        ],
+        "file_dep": [
+            "scripts/print_outlook_category_schema_alias.py",
+            "scripts/print_outlook_categories_schema.py",
+        ],
+        "verbosity": 2,
+    }

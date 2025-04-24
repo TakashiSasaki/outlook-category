@@ -1,8 +1,8 @@
-categories-*.json
+/categories-*.json
 __pycache__/*.pyc
 .doit.db
-outlook_categories.json
+/outlook_categories.json
 poetry.lock
 *.pyc
 OutlookCategories-20250424.json
-OutlookCategories.json
+/OutlookCategories.json
