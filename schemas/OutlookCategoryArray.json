@@ -1,22 +1,32 @@
 {
-    "$id": "https://raw.githubusercontent.com/TakashiSasaki/outlook-category/master/schemas/OutlookCategoryArray.yaml",
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "title": "Array of OutlookCategory objects",
-    "description": "A JSON Schema representing an array of OutlookCategory objects as defined in the OutlookCategory.yaml schema.\n",
-    "type": "array",
-    "items": {
-      "$ref": "https://raw.githubusercontent.com/TakashiSasaki/outlook-category/master/schemas/OutlookCategory.json"
-    },
-    "x-id": "urn:uuid:8f87b8d1-cc90-4e92-b295-b2222efcbf28",
-    "x-version": "1.0.0",
-    "x-created": "2025-04-24",
-    "x-createdBy": {
-      "name": "Takashi Sasaki",
-      "homepage": "https://x.com/TakashiSasaki"
-    },
-    "x-license": {
-      "name": "MIT",
-      "url": "https://opensource.org/licenses/MIT"
-    },
-    "x-repository": "https://github.com/TakashiSasaki/outlook-category"
-  }
+  "$id": "https://raw.githubusercontent.com/TakashiSasaki/outlook-category/master/schemas/OutlookCategoryArray.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Map of OutlookCategory arrays keyed by schema UUID",
+  "description": "An object whose single property is the UUID of the OutlookCategoryArray schema, mapping to an array of OutlookCategory objects.",
+  "type": "object",
+  "required": [
+    "8f87b8d1-cc90-4e92-b295-b2222efcbf28"
+  ],
+  "properties": {
+    "8f87b8d1-cc90-4e92-b295-b2222efcbf28": {
+      "type": "array",
+      "items": {
+        "$ref": "https://raw.githubusercontent.com/TakashiSasaki/outlook-category/master/schemas/OutlookCategory.json"
+      },
+      "description": "Array of OutlookCategory objects as defined by the schema with urn:uuid:8f87b8d1-cc90-4e92-b295-b2222efcbf28"
+    }
+  },
+  "additionalProperties": false,
+  "x-id": "urn:uuid:8f87b8d1-cc90-4e92-b295-b2222efcbf28",
+  "x-version": "1.0.0",
+  "x-created": "2025-04-24",
+  "x-createdBy": {
+    "name": "Takashi Sasaki",
+    "homepage": "https://x.com/TakashiSasaki"
+  },
+  "x-license": {
+    "name": "MIT",
+    "url": "https://opensource.org/licenses/MIT"
+  },
+  "x-repository": "https://github.com/TakashiSasaki/outlook-category"
+}
