@@ -1,6 +1,7 @@
 {
     "$id": "https://raw.githubusercontent.com/TakashiSasaki/outlook-category/master/schemas/OutlookCategory.yaml",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$anchor": "OutlookCategory",
     "OutlookCategory": {
         "title": "Outlook Category Export Schema (Unified)",
         "x-id": "urn:uuid:fd0cf529-cbf4-4fc6-a92f-86f357c6e51e",
