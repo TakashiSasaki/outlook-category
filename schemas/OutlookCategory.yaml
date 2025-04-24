@@ -1,19 +1,22 @@
+$id: "https://raw.githubusercontent.com/TakashiSasaki/outlook-category/master/schemas/OutlookCategory.yaml"
+$schema: "https://json-schema.org/draft/2020-12/schema"
+
 OutlookCategory:
   title: Outlook Category Export Schema (Unified)
   x-id: "urn:uuid:fd0cf529-cbf4-4fc6-a92f-86f357c6e51e"
+  x-version: "1.0.0"
+  x-created: "2025-04-24"
   x-createdBy:
     name: "Takashi Sasaki"
     homepage: "https://x.com/TakashiSasaki"
   x-license:
     name: "MIT"
     url: "https://opensource.org/licenses/MIT"
-  x-version: "1.0.0"
-  x-created: "2025-04-24"
   description: >
     A unified schema describing Outlook category objects exported via PowerShell
     from the Outlook COM API. This schema supports both simplified and detailed output modes.
-    Required fields are included in simplified mode, while additional properties are optionally
-    included in detailed exports. This schema is licensed under the MIT License.
+    Required fields are included in simplified mode, while additional fields are optionally
+    included when detailed export is requested. The Parent property has been intentionally excluded.
 
   type: object
   required:
@@ -81,38 +84,3 @@ OutlookCategory:
       description: >
         Display name or email address of the default store in the session.
         Obtained from `$category.Session.DefaultStore.DisplayName`.
-
-    Parent:
-      type: object
-      description: >
-        Summary of the parent Categories collection.
-        Retrieved from `$category.Parent`, typically referencing the global categories list.
-      properties:
-        TypeName:
-          type: string
-          description: >
-            The .NET type name of the parent object, typically 'System.__ComObject'.
-
-        ToString:
-          type: string
-          description: >
-            Default string representation of the parent COM object.
-
-        Count:
-          type: integer
-          description: >
-            Number of categories within the parent Categories collection.
-            Obtained from `$category.Parent.Count`.
-
-        PossibleClass:
-          oneOf:
-            - type: integer
-            - type: string
-          description: >
-            Numeric or string representation of the class type of the parent object.
-            Typically retrieved via reflection using `.InvokeMember("Class")`.
-
-        ParentPossibleClassName:
-          type: string
-          description: >
-            Human-readable name corresponding to `PossibleClass`, such as 'olCategories'.
