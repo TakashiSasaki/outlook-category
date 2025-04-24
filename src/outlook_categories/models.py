@@ -42,3 +42,23 @@ class OutlookCategory(BaseModel):
                 return getattr(self, attr)
 
         raise AttributeError(f"{type(self).__name__!r} has no attribute {name!r}")
+
+# src/outlook_categories/models.py
+
+from typing import Dict, List
+from pydantic import RootModel
+from .models import OutlookCategory  # assuming OutlookCategory is already defined here
+
+class OutlookCategories(RootModel[Dict[str, List[OutlookCategory]]]):
+    """
+    A root model for the mapping from schema‐UUID to a list of OutlookCategory objects.
+
+    JSON form:
+    {
+      "<schema‐UUID>": [
+        { … OutlookCategory … },
+        { … }
+      ]
+    }
+    """
+    pass
