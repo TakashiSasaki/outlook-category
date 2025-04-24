@@ -1,0 +1,121 @@
+{
+  "$defs": {
+    "OutlookCategory": {
+      "$id": "https://raw.githubusercontent.com/TakashiSasaki/outlook-category/master/schemas/OutlookCategory.json",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "Account": {
+          "description": "Display name or email address of the Outlook store \u2026",
+          "title": "Account",
+          "type": "string"
+        },
+        "CategoryID": {
+          "description": "Globally unique identifier for the category \u2026",
+          "pattern": "^\\{[0-9A-Fa-f\\-]{36}\\}$",
+          "title": "Categoryid",
+          "type": "string"
+        },
+        "Color": {
+          "description": "Integer corresponding to the OlCategoryColor enumeration \u2026",
+          "maximum": 25,
+          "minimum": 0,
+          "title": "Color",
+          "type": "integer"
+        },
+        "Name": {
+          "description": "Human-readable name of the category \u2026",
+          "title": "Name",
+          "type": "string"
+        },
+        "ClassName": {
+          "const": "olCategory",
+          "description": "Resolved value of the category class (typically 'olCategory'). \u2026",
+          "title": "Classname",
+          "type": "string"
+        },
+        "Application.Name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Name of the application providing the category object \u2026",
+          "title": "Application.Name"
+        },
+        "Application.Version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Version string of the Outlook application \u2026",
+          "title": "Application.Version"
+        },
+        "Session.CurrentUser": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Display name of the user associated with the current Outlook session \u2026",
+          "title": "Session.Currentuser"
+        },
+        "Session.DefaultStore": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Display name or email address of the default store in the session \u2026",
+          "title": "Session.Defaultstore"
+        }
+      },
+      "required": [
+        "Account",
+        "CategoryID",
+        "Color",
+        "Name",
+        "ClassName"
+      ],
+      "title": "Outlook Category Export Schema (Unified)",
+      "type": "object",
+      "x-created": "2025-04-24",
+      "x-createdBy": {
+        "homepage": "https://x.com/TakashiSasaki",
+        "name": "Takashi Sasaki"
+      },
+      "x-id": "urn:uuid:fd0cf529-cbf4-4fc6-a92f-86f357c6e51e",
+      "x-license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      },
+      "x-repository": "https://github.com/TakashiSasaki/outlook-category",
+      "x-version": "1.0.0"
+    }
+  },
+  "additionalProperties": {
+    "items": {
+      "$ref": "#/$defs/OutlookCategory"
+    },
+    "type": "array"
+  },
+  "description": "A root model for the mapping from schema\u2010UUID to a list of OutlookCategory objects.\n\nJSON form:\n{\n  \"<schema\u2010UUID>\": [\n    { \u2026 OutlookCategory \u2026 },\n    { \u2026 }\n  ]\n}",
+  "title": "OutlookCategories",
+  "type": "object"
+}
