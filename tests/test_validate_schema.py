@@ -15,7 +15,7 @@ def test_outlook_category_array_schema():
     """
     Load the local JSON schema and verify it conforms to JSON Schema Draft 2020-12.
     """
-    schema_path = Path(__file__).parent.parent / "schemas" / "OutlookCategoryArray.json"
+    schema_path = Path(__file__).parent.parent / "schemas" / "OutlookCategories.json"
     with schema_path.open(encoding="utf-8") as f:
         schema = json.load(f)
 
