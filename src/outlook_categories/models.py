@@ -1,45 +1,44 @@
-from pydantic import BaseModel, Field
-from typing import Any, Dict
+# src/outlook_categories/models.py
 
+from typing import Any, Dict
+from pydantic import BaseModel, Field, ConfigDict
 
 class OutlookCategory(BaseModel):
-    Account: str
-    CategoryID: str
-    Color: int
-    Name: str
-    ClassName: str
+    """
+    Pydantic v2 model for an Outlook category, with alias-based attribute access.
+    """
 
-    Application_Name: str = Field(..., alias="Application.Name")
-    Application_Version: str = Field(..., alias="Application.Version")
-    Session_CurrentUser: str = Field(..., alias="Session.CurrentUser")
-    Session_DefaultStore: str = Field(..., alias="Session.DefaultStore")
+    model_config = ConfigDict(
+        populate_by_name=True,
+        extra="ignore",
+    )
 
-    class Config:
-        # allow input using the dotted keys
-        allow_population_by_field_name = True  
-        # when you call .dict(by_alias=True), it will emit dotted keys again
-        allow_population_by_alias = True
+    account: str = Field(..., alias="Account")
+    category_id: str = Field(..., alias="CategoryID", pattern=r"^\{[0-9A-Fa-f\-]{36}\}$")
+    color: int = Field(..., alias="Color", ge=0, le=25)
+    name: str = Field(..., alias="Name")
+    class_name: str = Field(..., alias="ClassName")
+    application_name: str = Field(..., alias="Application.Name")
+    application_version: str = Field(..., alias="Application.Version")
+    session_current_user: str = Field(..., alias="Session.CurrentUser")
+    session_default_store: str = Field(..., alias="Session.DefaultStore")
 
+    def __getattr__(self, name: str) -> Any:
+        """
+        Allow access via alias (with dots or underscores).
+        """
+        # use the class’s model_fields to avoid instance deprecation
+        fields = type(self).model_fields
 
-# Example usage:
-raw: Dict[str, Any] = {
-    "Account": "foo@example.com",
-    "CategoryID": "{...}",
-    "Color": 3,
-    "Name": "MyCat",
-    "ClassName": "olCategory",
-    "Application.Name": "Outlook",
-    "Application.Version": "16.0.1234",
-    "Session.CurrentUser": "You",
-    "Session.DefaultStore": "you@example.com",
-}
+        # direct alias match
+        for attr, info in fields.items():
+            if info.alias == name:
+                return getattr(self, attr)
 
-# Validate & parse:
-obj = OutlookCategory.parse_obj(raw)
+        # underscore-normalized alias
+        alt = name.replace("_", ".")
+        for attr, info in fields.items():
+            if info.alias == alt:
+                return getattr(self, attr)
 
-# Access via Python attributes:
-print(obj.Application_Name)  # Outlook
-
-# Round-trip back to dotted-key dict:
-validated_dict = obj.dict(by_alias=True)
-assert "Application.Name" in validated_dict
+        raise AttributeError(f"{type(self).__name__!r} has no attribute {name!r}")

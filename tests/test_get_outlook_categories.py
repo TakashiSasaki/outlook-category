@@ -17,8 +17,8 @@ def test_get_outlook_categories_returns_list():
 
 @pytest.mark.parametrize("item", get_outlook_categories())
 def test_each_item_validates_against_model(item):
-    # parse_obj will raise ValidationError if any field is wrong
-    model = OutlookCategory.parse_obj(item)
+    # model_validate will raise ValidationError if any field is wrong
+    model = OutlookCategory.model_validate(item)
     assert isinstance(model, OutlookCategory)
     # Spot-check some fields
     assert isinstance(model.Account, str) and model.Account, "Account must be a non-empty string"
