@@ -54,7 +54,7 @@ def validate_json():
     jsonschema.validate(
         instance=data, schema=schema, cls=jsonschema.Draft202012Validator
     )
-    print("✅ JSON data is valid according to OutlookCategoryArray schema.")
+    print("[Validate] JSON data is valid according to OutlookCategoryArray schema.")
 
 
 def main():
