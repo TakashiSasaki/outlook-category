@@ -19,10 +19,11 @@ DOIT_CONFIG = {
 }
 
 # ---------- Common paths ----------
-SCHEMA_JSON   = Path("schemas/OutlookCategoryArray.json")
+SCHEMA_JSON = Path("schemas/OutlookCategoryArray.json")
 VALIDATE_DATA = Path("validate_data.py")
 
 # ---------- Task definitions ----------
+
 
 def task_lint():
     """Static-analysis: ruff lint and black formatting check."""
@@ -64,6 +65,6 @@ def task_export():
 def task_health():
     """Meta-task that executes *lint*, *validate_schema* and *export* in sequence."""
     return {
-        "actions": None,           # Only dependencies will run
+        "actions": None,  # Only dependencies will run
         "task_dep": ["lint", "validate_schema", "export"],
     }
