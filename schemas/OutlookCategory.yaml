@@ -12,6 +12,7 @@ OutlookCategory:
   x-license:
     name: "MIT"
     url: "https://opensource.org/licenses/MIT"
+  x-repository: "https://github.com/TakashiSasaki/outlook-category"
   description: >
     A unified schema describing Outlook category objects exported via PowerShell
     from the Outlook COM API. This schema supports both simplified and detailed output modes.
